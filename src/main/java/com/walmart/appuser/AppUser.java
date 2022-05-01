@@ -23,7 +23,8 @@ public class AppUser implements UserDetails {
             name = "staff_sequence",
             sequenceName = "staff_sequence",
             allocationSize = 1
-    )@Id
+    )
+    @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "staff_sequence"
