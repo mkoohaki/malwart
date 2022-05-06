@@ -7,10 +7,10 @@ import com.walmart.email.EmailSender;
 import com.walmart.registration.token.ConfirmationToken;
 import com.walmart.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 
 @Service
@@ -40,7 +40,9 @@ public class RegistrationService {
                 )
         );
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
-        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+        String remove = "http://localhost:8080/api/v1/registration/add15minutes?token=" + token;
+        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link, remove));
+
         return token;
     }
 
@@ -68,8 +70,31 @@ public class RegistrationService {
         return "confirmed";
     }
 
+    @Transactional
+    public String confirmTokenadd15minutes(String token) {
+        System.out.println(token);
+//        ConfirmationToken confirmationToken = confirmationTokenService
+//                .getToken(token)
+//                .orElseThrow(() ->
+//                        new IllegalStateException("token not found"));
+//
+//        if (confirmationToken.getConfirmedAt() != null) {
+//            throw new IllegalStateException("email already confirmed");
+//        }
+//        System.out.println(confirmationToken);
+//        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+//
+//        if (expiredAt.isBefore(LocalDateTime.now())) {
+            confirmationTokenService.setNewExpiresAt(token);
+//
+//
+//        }
 
-    private String buildEmail(String name, String link) {
+        return "You have 15 minutes to confirm";
+    }
+
+
+    private String buildEmail(String name, String link, String remove) {
 
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
@@ -126,7 +151,7 @@ public class RegistrationService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering. Please click on the below link to activate your account: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>\n </p></blockquote>\n <p>For resend the link click on the link below</p> <a href=\"" + link + "\">Resend</a>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering. Please click on the below link to activate your account: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>\n </p></blockquote>\n <p>For resend the link click on the link below</p> <a href=\"" + remove + "\">Resend</a>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +

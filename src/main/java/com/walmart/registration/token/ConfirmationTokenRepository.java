@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
+@Transactional(readOnly = true)
 public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
 
     Optional<ConfirmationToken> findByToken(String token);
@@ -21,4 +22,12 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
             "WHERE c.token = ?1")
     int updateConfirmedAt(String token,
                           LocalDateTime confirmedAt);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE ConfirmationToken c " +
+            "SET c.expiresAt = ?2" +
+            "WHERE c.token = ?1")
+    int add15minutesToExpiresAt(String token,
+                          LocalDateTime expiresAt);
 }
