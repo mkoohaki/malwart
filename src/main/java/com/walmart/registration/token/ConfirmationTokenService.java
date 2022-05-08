@@ -25,14 +25,4 @@ public class ConfirmationTokenService {
         confirmationTokenRepository.updateConfirmedAt(
                 token, LocalDateTime.now());
     }
-
-//    public int setNewExpiresAt(String token, String newToken) {
-//        return confirmationTokenRepository.add15minutesToExpiresAt(
-//                token, LocalDateTime.now().plusMinutes(15), newToken);
-//    }
-
-    public void setNewExpiresAt(String token) {
-        confirmationTokenRepository.add15minutesToExpiresAt(
-                token, LocalDateTime.now().plusMinutes(15));
-    }
 }

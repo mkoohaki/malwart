@@ -24,9 +24,4 @@ public class RegistrationController {
     public String confirm(@RequestParam("token") String token) {
         return registrationService.confirmToken(token);
     }
-
-    @GetMapping(path = "add15minutes")
-    public String add15minutes(@RequestParam("token") String token) {
-        return registrationService.confirmTokenadd15minutes(token);
-    }
 }
